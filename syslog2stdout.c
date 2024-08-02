@@ -104,7 +104,9 @@ const char *const facilities[24] = {
     "local7",   /* 23  local use 7  (local7) */
 };
 
-const char *const priorities[8] = {
+#define PRIORITY_COUNT 8
+int max_level = 3;
+const char *const priorities[PRIORITY_COUNT] = {
     "emerg",    /*  0  Emergency: system is unusable */
     "alert",    /*  1  Alert: action must be taken immediately */
     "crit",     /*  2  Critical: critical conditions */
@@ -460,6 +462,12 @@ static const char *from_syslog(
     facilitylen = strlen(facility);
     priority = priorities[prival & 7];
     prioritylen = strlen(priority);
+    // TODO: ignore certain priorities
+    if ((prival & 7) > max_level) {
+        start_buf[0] = '\0';
+        *out_length = 0;
+        return start_buf;
+    }
 
     priend = strchr(start_msg, '>');
     if (priend == NULL) {
@@ -516,6 +524,19 @@ int main(const int argc, const char *const *argv)
     struct sigevent sev;
     struct itimerspec its;
 #endif
+    const char* s = getenv("SYSLOG_LEVEL");
+    if (s != NULL) {
+        // support numbers or words
+        if (all(*ch >= '0' && *ch <= '9', s)) {
+            max_level = atoi(s);
+        } else {
+            for(int i = 0; i < PRIORITY_COUNT; ++i) {
+                if(!strcmp(priorities[i], s)) {
+                    max_level = i;
+                }
+            }
+        }
+    }
     container_stdout = open("/proc/1/fd/1",O_WRONLY);
     int argi;
     int ret;
