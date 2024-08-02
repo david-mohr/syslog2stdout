@@ -753,15 +753,6 @@ static void process_fd_input(int epollfd, int fd, int is_connected)
         return;
     }
 
-    if (addrlen == 0) {
-        /* Connected sockets do not get the address populated by recvfrom().
-         * Forcefully get it anyway by using getpeername(). */
-        addrlen = sizeof(src_addr);
-        if (getpeername(fd, (struct sockaddr*)&src_addr, &addrlen) < 0) {
-            perror("getpeername");
-        }
-    }
-
     sockaddr_human(&src_addr, originbuf, sizeof(originbuf));
 #if 0
     fprintf(
