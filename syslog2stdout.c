@@ -30,7 +30,7 @@ License:
   GPL-3.0+
 
 */
-#define PERIODIC_STATUS_REPORT 1
+#define PERIODIC_STATUS_REPORT 0
 #define MAX_CONNECTIONS 512
 
 #include <assert.h>
@@ -183,8 +183,6 @@ static void periodic_handler(int sig, siginfo_t *si, void *uc)
     int last_used_block = 0;
 
     buf[0] = '\0';
-    strncat(p, "syslog2stdout " SYSLOG2STDOUT_VERSION, 50);
-    p += strlen(buf);
 
     for (last_used_block = sizeof(connected_fds) - 1;
             last_used_block >= 0 && !connected_fds[last_used_block];
