@@ -32,12 +32,6 @@ License:
 */
 #define PERIODIC_STATUS_REPORT 1
 #define MAX_CONNECTIONS 512
-#ifndef SYSLOG2STDOUT_VERSION
-#define SYSLOG2STDOUT_VERSION "vFIXME"
-#endif
-#ifndef COMPILER_VERSION
-#define COMPILER_VERSION "Unknown compiler"
-#endif
 
 #include <assert.h>
 #include <arpa/inet.h>
@@ -529,7 +523,6 @@ int main(const int argc, const char *const *argv)
     if (argc < 2 || argc > 10) {
         fprintf(
             stderr,
-            "syslog2stdout " SYSLOG2STDOUT_VERSION " [" COMPILER_VERSION "] \n"
             "Usage: syslog2stdout LISTENADDR...\n"
             "Where LISTENADDR is one of '/dev/log' or '514' or 'tcp/514'\n");
         exit(1);
