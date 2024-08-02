@@ -47,6 +47,7 @@ License:
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #ifdef PERIODIC_STATUS_REPORT
 #include <signal.h>
@@ -508,6 +509,7 @@ static const char *from_syslog(
     return newbuf;
 }
 
+int container_stdout;
 int main(const int argc, const char *const *argv)
 {
 #ifdef PERIODIC_STATUS_REPORT
@@ -516,6 +518,7 @@ int main(const int argc, const char *const *argv)
     struct sigevent sev;
     struct itimerspec its;
 #endif
+    container_stdout = open("/proc/1/fd/1",O_WRONLY);
     int argi;
     int ret;
     int epollfd;
@@ -786,7 +789,7 @@ static void process_fd_input(int epollfd, int fd, int is_connected)
     buf[size] = '\0'; /* just in case */
 
     outbuf = from_syslog(fullbuf, buf, size, originbuf, &outlen);
-    if (write(STDOUT_FILENO, outbuf, outlen) < 0) {
+    if (write(container_stdout, outbuf, outlen) < 0) {
         perror("write");
         exit(2); /* this is bad */
     }
