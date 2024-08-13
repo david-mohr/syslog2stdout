@@ -105,7 +105,7 @@ const char *const facilities[24] = {
 };
 
 #define PRIORITY_COUNT 8
-int max_level = 3;
+int max_level = 2;
 const char *const priorities[PRIORITY_COUNT] = {
     "emerg",    /*  0  Emergency: system is unusable */
     "alert",    /*  1  Alert: action must be taken immediately */
